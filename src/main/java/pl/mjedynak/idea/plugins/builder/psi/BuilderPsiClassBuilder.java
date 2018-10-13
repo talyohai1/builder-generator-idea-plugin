@@ -53,7 +53,7 @@ public class BuilderPsiClassBuilder {
     private String srcClassFieldName = null;
 
     private boolean useSingleField = false;
-    private boolean isInline = false;
+    private boolean isInline = true;
 
     public BuilderPsiClassBuilder aBuilder(BuilderContext context) {
         initializeFields(context);
@@ -87,7 +87,6 @@ public class BuilderPsiClassBuilder {
         bestConstructor = context.getPsiFieldsForBuilder().getBestConstructor();
         methodCreator = new MethodCreator(elementFactory, builderClassName);
         butMethodCreator = new ButMethodCreator(elementFactory);
-        isInline = true;
     }
 
     public BuilderPsiClassBuilder withFields() {
