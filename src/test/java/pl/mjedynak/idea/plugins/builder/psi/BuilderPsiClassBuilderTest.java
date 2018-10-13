@@ -545,7 +545,7 @@ public class BuilderPsiClassBuilderTest {
 
         PsiMethod method = mock(PsiMethod.class);
         String expectedCode = "public " + srcClassName + " build() { "
-                + "return new " + srcClassName + "(false,0,0,0,0L,0.0f,0.0d,'\\u0000',null); }";
+                + "return new " + srcClassName + "(\nfalse,\n0,\n0,\n0,\n0L,\n0.0f,\n0.0d,\n'\\u0000',\nnull); }";
         given(elementFactory.createMethodFromText(expectedCode, srcClass)).willReturn(method);
 
         given(builderClass.hasModifierProperty("static")).willReturn(true);

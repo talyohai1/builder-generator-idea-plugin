@@ -29,6 +29,7 @@ public class BuilderPsiClassBuilder {
     private static final String A_PREFIX = " a";
     private static final String AN_PREFIX = " an";
     private static final String SEMICOLON = ",";
+    private static final int MAX_CONSTRUCTOR_ARGUMENTS_PER_LINE = 3;
     static final String STATIC_MODIFIER = "static";
     static final String FINAL_MODIFIER = "final";
 
@@ -232,9 +233,18 @@ public class BuilderPsiClassBuilder {
         if (bestConstructor == null) {
             return "";
         }
+
         StringBuilder sb = new StringBuilder();
+        boolean separateParametersWithNewLine = bestConstructor.getParameterList().getParameters().length >
+                MAX_CONSTRUCTOR_ARGUMENTS_PER_LINE;
+
         for (PsiParameter psiParameter : bestConstructor.getParameterList().getParameters()) {
             boolean parameterHasMatchingField = false;
+
+            if (separateParametersWithNewLine) {
+                sb.append('\n');
+            }
+
             for (PsiField psiField : psiFieldsForConstructor) {
                 if (psiFieldVerifier.areNameAndTypeEqual(psiField, psiParameter)) {
                     sb.append(psiField.getName()).append(SEMICOLON);
@@ -242,10 +252,12 @@ public class BuilderPsiClassBuilder {
                     break;
                 }
             }
+
             if (!parameterHasMatchingField) {
                 sb.append(getDefaultValue(psiParameter.getType())).append(SEMICOLON);
             }
         }
+
         removeLastSemicolon(sb);
         return sb.toString();
     }

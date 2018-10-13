@@ -44,6 +44,8 @@ public class PsiFieldsModifier {
                     || PsiType.SHORT.equals(psiField.getType()) || "Short".equals(psiField.getType().getPresentableText())
                     || PsiType.BYTE.equals(psiField.getType()) || "Byte".equals(psiField.getType().getPresentableText())) {
                 psiInitializer = elementFactory.createExpressionFromText("1", psiField);
+            } else if (PsiType.CHAR.equals(psiField.getType()) || "Char".equals(psiField.getType().getPresentableText())) {
+                psiInitializer = elementFactory.createExpressionFromText("''", psiField);
             } else if (PsiType.LONG.equals(psiField.getType()) || "Long".equals(psiField.getType().getPresentableText())) {
                 psiInitializer = elementFactory.createExpressionFromText("1L", psiField);
             } else if (PsiType.BOOLEAN.equals(psiField.getType()) || "Boolean".equals(psiField.getType().getPresentableText())) {
