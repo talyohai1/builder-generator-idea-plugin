@@ -60,7 +60,7 @@ public class BuilderPsiClassBuilder {
         JavaDirectoryService javaDirectoryService = psiHelper.getJavaDirectoryService();
         builderClass = javaDirectoryService.createClass(context.getTargetDirectory(), builderClassName);
         PsiModifierList modifierList = builderClass.getModifierList();
-        modifierList.setModifierProperty(FINAL_MODIFIER, true);
+        modifierList.setModifierProperty(FINAL_MODIFIER, false);
         return this;
     }
 
@@ -68,7 +68,7 @@ public class BuilderPsiClassBuilder {
         initializeFields(context);
         builderClass = elementFactory.createClass(builderClassName);
         PsiModifierList modifierList = builderClass.getModifierList();
-        modifierList.setModifierProperty(FINAL_MODIFIER, true);
+        modifierList.setModifierProperty(FINAL_MODIFIER, false);
         modifierList.setModifierProperty(STATIC_MODIFIER, true);
         return this;
     }
@@ -95,9 +95,9 @@ public class BuilderPsiClassBuilder {
             PsiField singleField = elementFactory.createFieldFromText(fieldText, srcClass);
             builderClass.add(singleField);
         } else if (isInnerBuilder(builderClass)) {
-            psiFieldsModifier.modifyFieldsForInnerClass(allSelectedPsiFields, builderClass);
+            psiFieldsModifier.modifyFieldsForInnerClass(allSelectedPsiFields, builderClass, elementFactory);
         } else {
-            psiFieldsModifier.modifyFields(psiFieldsForSetters, psiFieldsForConstructor, builderClass);
+            psiFieldsModifier.modifyFields(psiFieldsForSetters, psiFieldsForConstructor, builderClass, elementFactory);
         }
         return this;
     }

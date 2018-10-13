@@ -1,10 +1,6 @@
 package pl.mjedynak.idea.plugins.builder.psi;
 
-import com.intellij.psi.PsiAnnotation;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiField;
-import com.intellij.psi.PsiModifierList;
+import com.intellij.psi.*;
 import com.intellij.psi.javadoc.PsiDocComment;
 
 import java.util.List;
@@ -13,27 +9,73 @@ public class PsiFieldsModifier {
 
     static final String FINAL = "final";
 
-    public void modifyFields(List<PsiField> psiFieldsForSetters, List<PsiField> psiFieldsForConstructor, PsiClass builderClass) {
+    public void modifyFields(List<PsiField> psiFieldsForSetters, List<PsiField> psiFieldsForConstructor,
+                             PsiClass builderClass, PsiElementFactory elementFactory) {
         for (PsiField psiFieldsForSetter : psiFieldsForSetters) {
-            removeModifiers(psiFieldsForSetter, builderClass);
+            removeModifiersAndInitialize(psiFieldsForSetter, builderClass, elementFactory);
         }
         for (PsiField psiFieldForConstructor : psiFieldsForConstructor) {
-            removeModifiers(psiFieldForConstructor, builderClass);
+            removeModifiersAndInitialize(psiFieldForConstructor, builderClass, elementFactory);
         }
     }
 
-    public void modifyFieldsForInnerClass(List<PsiField> allFileds, PsiClass innerBuilderClass) {
+    public void modifyFieldsForInnerClass(List<PsiField> allFileds, PsiClass innerBuilderClass, PsiElementFactory elementFactory) {
         for (PsiField field : allFileds) {
-            removeModifiers(field, innerBuilderClass);
+            removeModifiersAndInitialize(field, innerBuilderClass, elementFactory);
         }
     }
 
-    private void removeModifiers(PsiField psiField, PsiClass builderClass) {
+    private void removeModifiersAndInitialize(PsiField psiField, PsiClass builderClass, PsiElementFactory elementFactory) {
         PsiElement copy = psiField.copy();
         removeAnnotationsFromElement(copy);
         removeFinalModifierFromElement(copy);
         removeComments(copy);
+        addInitialization(copy, elementFactory);
         builderClass.add(copy);
+    }
+
+    private void addInitialization(PsiElement psiElement, PsiElementFactory elementFactory) {
+        if (psiElement instanceof PsiField) {
+            PsiField psiField = ((PsiField) psiElement);
+
+            PsiExpression psiInitializer = null;
+
+            if (PsiType.INT.equals(psiField.getType()) || "Integer".equals(psiField.getType().getPresentableText())
+                    || PsiType.SHORT.equals(psiField.getType()) || "Short".equals(psiField.getType().getPresentableText())
+                    || PsiType.BYTE.equals(psiField.getType()) || "Byte".equals(psiField.getType().getPresentableText())) {
+                psiInitializer = elementFactory.createExpressionFromText("1", psiField);
+            } else if (PsiType.LONG.equals(psiField.getType()) || "Long".equals(psiField.getType().getPresentableText())) {
+                psiInitializer = elementFactory.createExpressionFromText("1L", psiField);
+            } else if (PsiType.BOOLEAN.equals(psiField.getType()) || "Boolean".equals(psiField.getType().getPresentableText())) {
+                psiInitializer = elementFactory.createExpressionFromText("false", psiField);
+            } else if (PsiType.FLOAT.equals(psiField.getType()) || "Float".equals(psiField.getType().getPresentableText())) {
+                psiInitializer = elementFactory.createExpressionFromText("2.4f", psiField);
+            } else if (PsiType.DOUBLE.equals(psiField.getType()) || "Double".equals(psiField.getType().getPresentableText())) {
+                psiInitializer = elementFactory.createExpressionFromText("1.4d", psiField);
+            } else if ("String".equals(psiField.getType().getPresentableText())) {
+                psiInitializer = elementFactory.createExpressionFromText("RandomStringUtils.randomAlphabetic(5)", psiField);
+            } else if ("Date".equals(psiField.getType().getPresentableText())) {
+                psiInitializer = elementFactory.createExpressionFromText("new Date()", psiField);
+            } else if ("LocalDateTime".equals(psiField.getType().getPresentableText())) {
+                psiInitializer = elementFactory.createExpressionFromText("LocalDateTime.now()", psiField);
+            } else if ("UUID".equals(psiField.getType().getPresentableText())) {
+                psiInitializer = elementFactory.createExpressionFromText("UUID.randomUUID()", psiField);
+            } else if (psiField.getType().getPresentableText().startsWith("Set")) {
+                psiInitializer = elementFactory.createExpressionFromText("new HashSet<>()", psiField);
+            } else if (psiField.getType().getPresentableText().startsWith("List")) {
+                psiInitializer = elementFactory.createExpressionFromText("new ArrayList<>()", psiField);
+            } else if (psiField.getType().getPresentableText().startsWith("Map")) {
+                psiInitializer = elementFactory.createExpressionFromText("new HashMap<>()", psiField);
+            } else if (psiField.getType().getPresentableText().contains("[]")) {
+                String presentableText = psiField.getType().getPresentableText();
+                psiInitializer = elementFactory.createExpressionFromText(
+                        String.format("new %s", presentableText.replace("[]", "[5]")), psiField);
+            }
+
+            if (psiInitializer != null) {
+                psiField.setInitializer(psiInitializer);
+            }
+        }
     }
 
     private void removeComments(PsiElement psiElement) {

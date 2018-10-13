@@ -113,7 +113,7 @@ public class BuilderPsiClassBuilderTest {
 
         // then
         assertFieldsAreSet(result);
-        verify(psiModifierList).setModifierProperty(FINAL_MODIFIER, true);
+        verify(psiModifierList).setModifierProperty(FINAL_MODIFIER, false);
     }
 
     @Test
@@ -124,7 +124,7 @@ public class BuilderPsiClassBuilderTest {
         // then
         assertFieldsAreSet(result);
         verify(psiModifierList).setModifierProperty(STATIC_MODIFIER, true);
-        verify(psiModifierList).setModifierProperty(FINAL_MODIFIER, true);
+        verify(psiModifierList).setModifierProperty(FINAL_MODIFIER, false);
     }
 
     @Test
@@ -134,7 +134,7 @@ public class BuilderPsiClassBuilderTest {
 
         // then
         assertThat(result).isSameAs(psiClassBuilder);
-        verify(psiFieldsModifier).modifyFields(psiFieldsForSetters, psiFieldsForConstructor, builderClass);
+        verify(psiFieldsModifier).modifyFields(psiFieldsForSetters, psiFieldsForConstructor, builderClass, elementFactory);
     }
 
     @Test
@@ -150,7 +150,7 @@ public class BuilderPsiClassBuilderTest {
 
         // then
         assertThat(result).isSameAs(psiClassBuilder);
-        verify(psiFieldsModifier, never()).modifyFields(psiFieldsForSetters, psiFieldsForConstructor, builderClass);
+        verify(psiFieldsModifier, never()).modifyFields(psiFieldsForSetters, psiFieldsForConstructor, builderClass, elementFactory);
         verify(builderClass).add(singleField);
     }
 
