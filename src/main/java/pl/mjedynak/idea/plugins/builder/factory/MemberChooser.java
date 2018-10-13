@@ -39,6 +39,7 @@ import java.awt.event.*;
 import java.util.*;
 import java.util.List;
 
+@SuppressWarnings("deprecation")
 public class MemberChooser<T extends ClassMember> extends DialogWrapper implements TypeSafeDataProvider {
     private static final Logger LOG = Logger.getInstance("#com.intellij.ide.util.MemberChooser");
     protected Tree myTree;

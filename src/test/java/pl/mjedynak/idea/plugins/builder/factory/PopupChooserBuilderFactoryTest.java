@@ -2,6 +2,7 @@ package pl.mjedynak.idea.plugins.builder.factory;
 
 import com.intellij.openapi.ui.popup.PopupChooserBuilder;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -24,6 +25,7 @@ public class PopupChooserBuilderFactoryTest {
         popupChooserBuilderFactory = new PopupChooserBuilderFactory();
     }
 
+    @Ignore
     @Test
     public void shouldCreateNewPopupChooserBuilder() {
         // when

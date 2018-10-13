@@ -24,7 +24,7 @@ import static com.intellij.openapi.util.text.StringUtil.isVowel;
 
 public class BuilderPsiClassBuilder {
 
-    private static final String PRIVATE_STRING = "private";
+    private static final String PUBLIC_STRING = "public";
     private static final String SPACE = " ";
     private static final String A_PREFIX = " a";
     private static final String AN_PREFIX = " an";
@@ -87,7 +87,7 @@ public class BuilderPsiClassBuilder {
         bestConstructor = context.getPsiFieldsForBuilder().getBestConstructor();
         methodCreator = new MethodCreator(elementFactory, builderClassName);
         butMethodCreator = new ButMethodCreator(elementFactory);
-        isInline = allSelectedPsiFields.size() == psiFieldsForConstructor.size();
+        isInline = true;
     }
 
     public BuilderPsiClassBuilder withFields() {
@@ -103,14 +103,14 @@ public class BuilderPsiClassBuilder {
         return this;
     }
 
-    public BuilderPsiClassBuilder withPrivateConstructor() {
+    public BuilderPsiClassBuilder withPublicEmptyConstructor() {
         PsiMethod constructor;
         if (useSingleField) {
             constructor = elementFactory.createMethodFromText(builderClassName + "(){ " + srcClassFieldName + " = new " + srcClassName + "(); }", srcClass);
         } else {
             constructor = elementFactory.createConstructor();
         }
-        constructor.getModifierList().setModifierProperty(PRIVATE_STRING, true);
+        constructor.getModifierList().setModifierProperty(PUBLIC_STRING, true);
         builderClass.add(constructor);
         return this;
     }
