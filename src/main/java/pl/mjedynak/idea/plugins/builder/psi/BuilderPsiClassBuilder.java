@@ -235,8 +235,8 @@ public class BuilderPsiClassBuilder {
         }
 
         StringBuilder sb = new StringBuilder();
-        boolean separateParametersWithNewLine = bestConstructor.getParameterList().getParameters().length >
-                MAX_CONSTRUCTOR_ARGUMENTS_PER_LINE;
+        boolean separateParametersWithNewLine = bestConstructor.getParameterList().getParameters().length
+                > MAX_CONSTRUCTOR_ARGUMENTS_PER_LINE;
 
         for (PsiParameter psiParameter : bestConstructor.getParameterList().getParameters()) {
             boolean parameterHasMatchingField = false;
