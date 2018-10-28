@@ -29,8 +29,7 @@ public class BuilderPsiClassBuilder {
     private static final String A_PREFIX = " a";
     private static final String AN_PREFIX = " an";
     private static final String SEMICOLON = ",";
-    private static final int MAX_SINGLE_LINEC_ONSTRUCTOR_ARGUMENTS = 3;
-    private static final int MAX_FIELDS_FOR_INLINE_CONSTRUCTOR = 3;
+    private static final int MAX_SINGLE_LINE_CONSTRUCTOR_ARGUMENTS = 3;
     static final String STATIC_MODIFIER = "static";
     static final String FINAL_MODIFIER = "final";
 
@@ -89,8 +88,7 @@ public class BuilderPsiClassBuilder {
         bestConstructor = context.getPsiFieldsForBuilder().getBestConstructor();
         methodCreator = new MethodCreator(elementFactory, builderClassName);
         butMethodCreator = new ButMethodCreator(elementFactory);
-        isInline = allSelectedPsiFields.size() <= MAX_FIELDS_FOR_INLINE_CONSTRUCTOR
-                && allSelectedPsiFields.size() == psiFieldsForConstructor.size();
+        isInline = allSelectedPsiFields.size() == psiFieldsForConstructor.size();
     }
 
     public BuilderPsiClassBuilder withFields() {
@@ -239,7 +237,7 @@ public class BuilderPsiClassBuilder {
 
         StringBuilder sb = new StringBuilder();
         boolean separateParametersWithNewLine = bestConstructor.getParameterList().getParameters().length
-                > MAX_SINGLE_LINEC_ONSTRUCTOR_ARGUMENTS;
+                > MAX_SINGLE_LINE_CONSTRUCTOR_ARGUMENTS;
 
         for (PsiParameter psiParameter : bestConstructor.getParameterList().getParameters()) {
             boolean parameterHasMatchingField = false;
