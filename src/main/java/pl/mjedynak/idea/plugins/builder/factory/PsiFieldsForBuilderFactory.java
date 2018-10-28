@@ -35,7 +35,7 @@ public class PsiFieldsForBuilderFactory {
                 }
             }
         }
-        List<PsiField> psiFieldsToFindInConstructor = allSelectedPsiFields;
+        List<PsiField> psiFieldsToFindInConstructor = getSubList(allSelectedPsiFields, psiFieldsFoundInSetters);
         List<PsiField> psiFieldsForConstructor = Lists.newArrayList();
         PsiMethod bestConstructor = bestConstructorSelector.getBestConstructor(psiFieldsToFindInConstructor, psiClass);
         if (bestConstructor != null) {

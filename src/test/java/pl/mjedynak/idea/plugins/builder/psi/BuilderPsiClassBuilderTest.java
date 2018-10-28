@@ -486,6 +486,66 @@ public class BuilderPsiClassBuilderTest {
         verify(builderClass).add(method);
     }
 
+    @Test
+    public void shouldNotOutputInlineConstructor() {
+        // given
+        PsiField nameField = mock(PsiField.class);
+        PsiField ageField = mock(PsiField.class);
+        PsiField addressField = mock(PsiField.class);
+        PsiField phoneNumberField = mock(PsiField.class);
+
+        given(nameField.getName()).willReturn("name");
+        given(ageField.getName()).willReturn("age");
+        given(addressField.getName()).willReturn("address");
+        given(phoneNumberField.getName()).willReturn("phoneNumber");
+
+        allSelectedPsiFields.add(nameField);
+        allSelectedPsiFields.add(ageField);
+        allSelectedPsiFields.add(addressField);
+        allSelectedPsiFields.add(phoneNumberField);
+
+        psiFieldsForSetters.add(nameField);
+        psiFieldsForSetters.add(ageField);
+        psiFieldsForSetters.add(addressField);
+        psiFieldsForSetters.add(phoneNumberField);
+
+        psiFieldsForConstructor.add(nameField);
+        psiFieldsForConstructor.add(ageField);
+        psiFieldsForConstructor.add(addressField);
+        psiFieldsForConstructor.add(phoneNumberField);
+
+        PsiParameter nameParameter = mock(PsiParameter.class);
+        PsiParameter ageParameter = mock(PsiParameter.class);
+        PsiParameter addressParameter = mock(PsiParameter.class);
+        PsiParameter phoneNumberParameter = mock(PsiParameter.class);
+
+        PsiParameterList psiParameterList = mock(PsiParameterList.class);
+        given(bestConstructor.getParameterList()).willReturn(psiParameterList);
+        given(psiParameterList.getParameters()).willReturn(
+                new PsiParameter[]{nameParameter, ageParameter, addressParameter, phoneNumberParameter});
+        given(psiFieldVerifier.areNameAndTypeEqual(nameField, nameParameter)).willReturn(true);
+        given(psiFieldVerifier.areNameAndTypeEqual(nameField, ageParameter)).willReturn(false);
+        given(psiFieldVerifier.areNameAndTypeEqual(ageField, nameParameter)).willReturn(false);
+        given(psiFieldVerifier.areNameAndTypeEqual(ageField, ageParameter)).willReturn(true);
+        given(psiFieldVerifier.areNameAndTypeEqual(addressField, addressParameter)).willReturn(true);
+        given(psiFieldVerifier.areNameAndTypeEqual(phoneNumberField, phoneNumberParameter)).willReturn(true);
+
+        PsiMethod method = mock(PsiMethod.class);
+        String expectedCode = "public " + srcClassName + " build() { "
+                + "return new " + srcClassName + "(name,age,address,phoneNumber); }";
+        given(elementFactory.createMethodFromText(expectedCode, srcClass)).willReturn(method);
+
+        given(builderClass.hasModifierProperty("static")).willReturn(true);
+
+        // when
+        PsiClass result = psiClassBuilder.aBuilder(context).build();
+
+        // then
+        assertThat(result).isNotNull();
+        verify(elementFactory).createMethodFromText(stringCaptor.capture(), eq(srcClass));
+        assertThat(stringCaptor.getValue()).isNotEqualTo(expectedCode);
+    }
+
     @Ignore
     @Test
     public void shouldSortConstructorParameters() {
@@ -543,9 +603,9 @@ public class BuilderPsiClassBuilderTest {
                 floatParameter, doubleParameter, charParameter, otherParameter
         });
 
-        PsiMethod method = mock(PsiMethod.class);
+                   PsiMethod method = mock(PsiMethod.class);
         String expectedCode = "public " + srcClassName + " build() { "
-                + "return new " + srcClassName + "(false,0,0,0,0L,0.0f,0.0d,'\\u0000',null); }";
+                + "return new " + srcClassName + "(\nfalse,\n0,\n0,\n0,\n0L,\n0.0f,\n0.0d,\n'\\u0000',\nnull); }";
         given(elementFactory.createMethodFromText(expectedCode, srcClass)).willReturn(method);
 
         given(builderClass.hasModifierProperty("static")).willReturn(true);
