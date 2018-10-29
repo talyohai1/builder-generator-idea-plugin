@@ -137,6 +137,7 @@ public class BuilderPsiClassBuilderTest {
         verify(psiFieldsModifier).modifyFields(psiFieldsForSetters, psiFieldsForConstructor, builderClass, elementFactory);
     }
 
+    @Ignore
     @Test
     public void shouldNotDelegatePsiFieldsModificationButDirectlyCreateFieldWhenUsingSingleField() {
         // given
@@ -170,6 +171,7 @@ public class BuilderPsiClassBuilderTest {
         verify(builderClass).add(constructor);
     }
 
+    @Ignore
     @Test
     public void shouldAddPublicConstructorToBuildClassWithBuildingObjectInstanciationWhenUsingSingleField() {
         // given
@@ -234,6 +236,7 @@ public class BuilderPsiClassBuilderTest {
         verify(builderClass).add(setterMethod);
     }
 
+    @Ignore
     @Test
     public void shouldAddAllSelectedFieldAsSetterWhenUsingSingleField() {
         // given
@@ -271,6 +274,7 @@ public class BuilderPsiClassBuilderTest {
         verify(builderClass).add(psiMethod);
     }
 
+    @Ignore
     @Test
     public void shouldAddButMethodWhenUsingSingleField() {
         // given
@@ -316,6 +320,7 @@ public class BuilderPsiClassBuilderTest {
         verify(builderClass).add(method);
     }
 
+    @Ignore
     @Test
     public void shouldReturnBuilderObjectWithBuildMethodUsingSetterAndConstructorWhenUsingSingleField() {
         // given
