@@ -71,6 +71,8 @@ public class PsiFieldsModifier {
                 psiInitializer = elementFactory.createExpressionFromText("new HashMap<>()", psiField);
             } else if (psiField.getType().getPresentableText().startsWith("LinkedList")) {
                 psiInitializer = elementFactory.createExpressionFromText("new LinkedList<>()", psiField);
+            } else if (psiField.getType().getPresentableText().startsWith("Optional")) {
+                psiInitializer = elementFactory.createExpressionFromText("Optional.empty()", psiField);
             } else if (psiField.getType().getPresentableText().contains("[]")) {
                 String presentableText = psiField.getType().getPresentableText();
                 psiInitializer = elementFactory.createExpressionFromText(
