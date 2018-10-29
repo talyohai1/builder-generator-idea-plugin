@@ -64,10 +64,13 @@ public class PsiFieldsModifier {
                 psiInitializer = elementFactory.createExpressionFromText("UUID.randomUUID()", psiField);
             } else if (psiField.getType().getPresentableText().startsWith("Set")) {
                 psiInitializer = elementFactory.createExpressionFromText("new HashSet<>()", psiField);
-            } else if (psiField.getType().getPresentableText().startsWith("List")) {
+            } else if (psiField.getType().getPresentableText().startsWith("List")
+                    || psiField.getType().getPresentableText().startsWith("ArrayList")) {
                 psiInitializer = elementFactory.createExpressionFromText("new ArrayList<>()", psiField);
             } else if (psiField.getType().getPresentableText().startsWith("Map")) {
                 psiInitializer = elementFactory.createExpressionFromText("new HashMap<>()", psiField);
+            } else if (psiField.getType().getPresentableText().startsWith("LinkedList")) {
+                psiInitializer = elementFactory.createExpressionFromText("new LinkedList<>()", psiField);
             } else if (psiField.getType().getPresentableText().contains("[]")) {
                 String presentableText = psiField.getType().getPresentableText();
                 psiInitializer = elementFactory.createExpressionFromText(
